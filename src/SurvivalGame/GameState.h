@@ -16,6 +16,7 @@ public:
 private:
 	bool mIsLoading = false;
 	int mLoadingProccess = 0;
+	anFloat2 mLoadingProccessBarSize = { 200.0f, 30.0f };
 
 	float mfWidth = 0.0f;
 	float mfHeight = 0.0f;

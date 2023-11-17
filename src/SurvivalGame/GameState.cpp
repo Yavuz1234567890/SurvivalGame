@@ -65,37 +65,40 @@ void GameState::OnEvent(const anEvent& event)
 		mMousePos.Y = event.MousePosition.Y - mfHeight * 0.5f;
 	}
 
-	if (event.Type == anEvent::KeyDown)
+	if (!mIsLoading)
 	{
-		if (event.KeyCode == anKeyW)
-			mKeyW = true;
+		if (event.Type == anEvent::KeyDown)
+		{
+			if (event.KeyCode == anKeyW)
+				mKeyW = true;
 
-		if (event.KeyCode == anKeyS)
-			mKeyS = true;
+			if (event.KeyCode == anKeyS)
+				mKeyS = true;
 
-		if (event.KeyCode == anKeyA)
-			mKeyA = true;
+			if (event.KeyCode == anKeyA)
+				mKeyA = true;
 
-		if (event.KeyCode == anKeyD)
-			mKeyD = true;
-	}
+			if (event.KeyCode == anKeyD)
+				mKeyD = true;
+		}
 
-	if (event.Type == anEvent::KeyUp)
-	{
-		if (event.KeyCode == anKeyW)
-			mKeyW = false;
+		if (event.Type == anEvent::KeyUp)
+		{
+			if (event.KeyCode == anKeyW)
+				mKeyW = false;
 
-		if (event.KeyCode == anKeyS)
-			mKeyS = false;
+			if (event.KeyCode == anKeyS)
+				mKeyS = false;
 
-		if (event.KeyCode == anKeyA)
-			mKeyA = false;
+			if (event.KeyCode == anKeyA)
+				mKeyA = false;
 
-		if (event.KeyCode == anKeyD)
-			mKeyD = false;
+			if (event.KeyCode == anKeyD)
+				mKeyD = false;
 
-		if (!mKeyW && !mKeyS && !mKeyA && !mKeyD)
-			mPlayerAxis = {};
+			if (!mKeyW && !mKeyS && !mKeyA && !mKeyD)
+				mPlayerAxis = {};
+		}
 	}
 }
 
@@ -103,9 +106,9 @@ void GameState::Render(anRenderer& renderer)
 {
 	if (mIsLoading)
 	{
-		renderer.DrawTexture(anTexture::GetWhiteTexture(), { 0.0f, -15.0f }, { 200.0f, 30.0f }, { 100, 100, 100 });
-		renderer.DrawTexture(anTexture::GetWhiteTexture(), { 200.0f * mLoadingProccess / 100 * 0.5f - 100.0f, -15.0f }, { 200.0f * mLoadingProccess / 100, 30.0f }, { 50, 180, 50 });
-		renderer.DrawString(PreloadedAssets::GetRalewayFont(), { -2.0f * (float)PreloadedAssets::GetRalewayFontSize(), (float)PreloadedAssets::GetRalewayFontSize() + 15.0f}, "Loading", {255, 255, 255});
+		renderer.DrawTexture(anTexture::GetWhiteTexture(), { 0.0f, mLoadingProccessBarSize.Y * -0.5f }, mLoadingProccessBarSize, { 100, 100, 100 });
+		renderer.DrawTexture(anTexture::GetWhiteTexture(), { mLoadingProccessBarSize.X * mLoadingProccess / 200 - mLoadingProccessBarSize.X * 0.5f, mLoadingProccessBarSize.Y * -0.5f }, { mLoadingProccessBarSize.X * mLoadingProccess / 100, 30.0f }, { 50, 180, 50 });
+		renderer.DrawString(PreloadedAssets::GetRalewayFont(), { -2.0f * (float)PreloadedAssets::GetRalewayFontSize(), (float)PreloadedAssets::GetRalewayFontSize() + mLoadingProccessBarSize.Y * 0.5f }, "Loading", { 255, 255, 255 });
 	}
 	else
 	{
