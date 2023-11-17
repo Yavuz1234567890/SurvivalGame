@@ -3,15 +3,12 @@
 #include "Renderer/anRenderer.h"
 #include "Device/anGPUCommands.h"
 #include "World/anWorld.h"
-#include "World/anObject.h"
-#include "World/anSpriteObject.h"
-#include "World/anLineObject.h"
-#include "World/anTextObject.h"
 #include "Core/anMessage.h"
 #include "Core/anKeyCodes.h"
 #include "State/anStateManager.h"
 #include "Math/anMath.h"
 #include "GameState.h"
+#include "PreloadedAssets.h"
 
 class GameApplication : public anApplication
 {
@@ -26,7 +23,11 @@ public:
 	}
 
 	void Initialize() override
-	{		
+	{
+		PreloadedAssets::Load();
+
+		mWindow->SetWindowIcon("icon.png");
+
 		anInitializeRandomDevice();
 
 		mWorld = new anWorld();

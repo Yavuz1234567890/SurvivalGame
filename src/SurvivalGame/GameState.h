@@ -14,6 +14,9 @@ public:
 	void OnEvent(const anEvent& event) override;
 	void Render(anRenderer& renderer) override;
 private:
+	bool mIsLoading = false;
+	int mLoadingProccess = 0;
+
 	float mfWidth = 0.0f;
 	float mfHeight = 0.0f;
 
@@ -36,6 +39,10 @@ private:
 	anTexture* mMapTexture = nullptr;
 	anFloat2 mMapSize;
 	anFloat2 mMapPos;
+
+	void PlayerMovement(float dt);
+	void LoadImages();
+	void InitializeVariables();
 };
 
 #endif
