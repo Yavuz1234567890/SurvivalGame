@@ -7,10 +7,10 @@
 anApplication::anApplication(const anApplicationCreationDescription& desc)
 	: mFramesPerSecond(0)
 {
-	memset(&mApplicationDesc, 0, sizeof(anApplicationCreationDescription));
 	mApplicationDesc.Title = desc.Title;
 	mApplicationDesc.Width = desc.Width;
 	mApplicationDesc.Height = desc.Height;
+	mApplicationDesc.WindowResizable = desc.WindowResizable;
 	mLogFile.open(desc.Title + ".log");
 }
 

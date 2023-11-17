@@ -17,11 +17,25 @@ private:
 	float mfWidth = 0.0f;
 	float mfHeight = 0.0f;
 
+	anFloat2 mCameraPos;
+	
 	anFloat2 mMousePos;
+
+	bool mKeyW = false;
+	bool mKeyS = false;
+	bool mKeyA = false;
+	bool mKeyD = false;
 
 	float mPlayerRot = 0.0f;
 	anFloat2 mPlayerSize = { 50.0f, 50.0f };
 	anFloat2 mPlayerPos;
+	anFloat2 mPlayerAxis;
+	anFloat2 mPlayerMovementRectMax;
+	anFloat2 mPlayerMovementRectMin;
+
+	anTexture* mMapTexture = nullptr;
+	anFloat2 mMapSize;
+	anFloat2 mMapPos;
 };
 
 #endif

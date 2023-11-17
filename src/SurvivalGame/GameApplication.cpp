@@ -17,7 +17,7 @@ class GameApplication : public anApplication
 {
 public:
 	GameApplication()
-		: anApplication({ "Survival Application", 1200, 700, false })
+		: anApplication({ "Survival", 1200, 700, false })
 	{
 	}
 
