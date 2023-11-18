@@ -99,6 +99,18 @@ void GameState::OnEvent(const anEvent& event)
 			if (!mKeyW && !mKeyS && !mKeyA && !mKeyD)
 				mPlayerAxis = {};
 		}
+
+		if (event.Type == anEvent::MouseDown)
+		{
+			if (event.MouseButton == 1)
+				mPlayerSpeed = mPlayerMaxSpeed;
+		}
+
+		if (event.Type == anEvent::MouseUp)
+		{
+			if (event.MouseButton == 1)
+				mPlayerSpeed = mPlayerMinSpeed;
+		}
 	}
 }
 
@@ -113,7 +125,7 @@ void GameState::Render(anRenderer& renderer)
 	else
 	{
 		renderer.DrawTexture(mMapTexture, mMapPos - mCameraPos, mMapSize, { 255, 255, 255 });
-		renderer.DrawTexture(anTexture::GetWhiteTexture(), mPlayerPos, mPlayerSize, mPlayerRot, { 255, 255, 255 });
+		renderer.DrawTextureSub(mPlayerTexture, mPlayerPos, mPlayerSize, { (mPlayerHappinessStatus * 2 + mPlayerEyesClosed) * mPlayerSize.X, 0.0f }, mPlayerSize, mPlayerRot, { 255, 255, 255 });
 	}
 }
 
@@ -121,38 +133,67 @@ void GameState::PlayerMovement(float dt)
 {
 	anFloat2 direction = { anCos(anDegreesToRadians(mPlayerRot)), anSin(anDegreesToRadians(mPlayerRot)) };
 	if (mKeyW)
-		mPlayerAxis = { direction.X, -direction.Y };
-
-	if (mKeyS)
-		mPlayerAxis = { -direction.X, direction.Y };
-
-	if (mKeyA)
 		mPlayerAxis = { -direction.Y, -direction.X };
 
-	if (mKeyD)
+	if (mKeyS)
 		mPlayerAxis = { direction.Y, direction.X };
 
-	mPlayerPos += mPlayerAxis;
+	if (mKeyA)
+		mPlayerAxis = { -direction.X, direction.Y };
+
+	if (mKeyD)
+		mPlayerAxis = { direction.X, -direction.Y };
+
+	mPlayerPos += mPlayerAxis * anFloat2(mPlayerSpeed, mPlayerSpeed);
 	mPlayerPos = Clamp2f(mPlayerPos, mPlayerMovementRectMin, mPlayerMovementRectMax);
 	if (mPlayerPos.X == mPlayerMovementRectMin.X || mPlayerPos.X == mPlayerMovementRectMax.X)
-		mCameraPos.X += mPlayerAxis.X;
+		mCameraPos.X += mPlayerAxis.X * mPlayerSpeed;
 
 	if (mPlayerPos.Y == mPlayerMovementRectMin.Y || mPlayerPos.Y == mPlayerMovementRectMax.Y)
-		mCameraPos.Y += mPlayerAxis.Y;
+		mCameraPos.Y += mPlayerAxis.Y * mPlayerSpeed;
 
 	mCameraPos = Clamp2f(mCameraPos, anFloat2((mfWidth - mMapSize.X) * 0.5f, (mfHeight - mMapSize.Y) * 0.5f), anFloat2((mMapSize.X - mfWidth) * 0.5f, (mMapSize.Y - mfHeight) * 0.5f));
 
-	mPlayerRot = -anRadiansToDegrees(anAtan2(mMousePos.Y - mPlayerPos.Y, mMousePos.X - mPlayerPos.X));
+	mPlayerRot = -anRadiansToDegrees(anAtan2(mMousePos.Y - mPlayerPos.Y, mMousePos.X - mPlayerPos.X)) - 90.0f;
+
+	if (mPlayerEyesClosed == 1)
+	{
+		if (mPlayerEyeCloseTimer >= 0.4f)
+		{
+			mPlayerEyesClosed = 0;
+			mPlayerEyeCloseTimer = 0.0f;
+		}
+	}
+
+	if (mPlayerEyesClosed == 0)
+	{
+		if (mPlayerEyeCloseTimer >= 3.5f)
+		{
+			mPlayerEyesClosed = 1;
+			mPlayerEyeCloseTimer = 0.0f;
+		}
+	}
+	
+	mPlayerEyeCloseTimer += dt;
 }
 
 void GameState::LoadImages()
 {
+	// map
 	mMapTexture = anLoadTexture("assets/map.png");
 
 	const int iMapWidth = (int)mMapTexture->GetWidth();
 	const int iMapHeight = (int)mMapTexture->GetHeight();
 
 	mMapSize = { (float)iMapWidth, (float)iMapHeight };
+
+	// player
+	mPlayerTexture = anLoadTexture("assets/player.png");
+
+	const int iPlayerWidth = (int)mPlayerTexture->GetWidth();
+	const int iPlayerHeight = (int)mPlayerTexture->GetHeight();
+
+	mPlayerSize = { (float)iPlayerWidth / 6.0f, (float)iPlayerHeight };
 }
 
 void GameState::InitializeVariables()

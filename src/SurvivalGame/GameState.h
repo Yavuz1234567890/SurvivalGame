@@ -3,6 +3,16 @@
 
 #include "State/anState.h"
 
+namespace PlayerHappinessStatus
+{
+	enum : anUInt32
+	{
+		Normal = 0,
+		Happy,
+		Unhappy
+	};
+}
+
 class GameState : public anState
 {
 public:
@@ -31,11 +41,18 @@ private:
 	bool mKeyD = false;
 
 	float mPlayerRot = 0.0f;
-	anFloat2 mPlayerSize = { 50.0f, 50.0f };
+	anFloat2 mPlayerSize;
 	anFloat2 mPlayerPos;
 	anFloat2 mPlayerAxis;
 	anFloat2 mPlayerMovementRectMax;
 	anFloat2 mPlayerMovementRectMin;
+	float mPlayerMinSpeed = 1.8f;
+	float mPlayerMaxSpeed = 2.5f;
+	float mPlayerSpeed = mPlayerMinSpeed;
+	anUInt32 mPlayerHappinessStatus = PlayerHappinessStatus::Normal;
+	anTexture* mPlayerTexture;
+	anUInt32 mPlayerEyesClosed = 0;
+	float mPlayerEyeCloseTimer = 0.0f;
 
 	anTexture* mMapTexture = nullptr;
 	anFloat2 mMapSize;
